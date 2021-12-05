@@ -1,0 +1,5 @@
+VAlid Tweets: 2096
+Total Covid Tweets: 275
+Total  Tweets: 2100
+Total  Requests: 14
+Total Alt Covid Tweets: 37
