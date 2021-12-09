@@ -5,12 +5,12 @@ import json
 import pickle
 import pandas as pd
 
-path ="./Data/"
+path ="./ProcessedData/"
 
 # https://tecadmin.net/install-apache-solr-on-ubuntu/
 
 
-CORE_NAME = "IRF21P4001"
+CORE_NAME = "IRF21P4015"
 AWS_IP = "localhost"
 
 
@@ -137,6 +137,41 @@ class Indexer:
                     "name": "geolocation",
                     "type": "string",
                     "multiValued": True
+                },
+                {
+                    "name": "negative_sentiment",
+                    "type": "pfloat",
+                    "multiValued": False
+                },
+                {
+                    "name": "positive_sentiment",
+                    "type": "pfloat",
+                    "multiValued": False
+                },
+                {
+                    "name": "neutral_sentiment",
+                    "type": "pfloat",
+                    "multiValued": False
+                },
+                {
+                    "name": "compound_sentiment",
+                    "type": "pfloat",
+                    "multiValued": False
+                },
+                {
+                    "name": "translated_to_english",
+                    "type": "string",
+                    "multiValued": False
+                },
+                {
+                    "name": "is_vaccine_tweet",
+                    "type": "boolean",
+                    "multiValued": False
+                },
+                {
+                    "name": "is_covid_tweet",
+                    "type": "boolean",
+                    "multiValued": False
                 },
             ]
         }
@@ -281,29 +316,29 @@ if __name__ == "__main__":
     i.replace_BM25(b=0.8, k1=0.2)
     i.add_fields()
 
-    A_count=0
+    A_count = 0
     Ad_count = 0
     for root, dirs, files in os.walk(path):
         for file in files:
             fileName = os.path.join(root, file)
-            if(file.endswith(".pickle")):
+            if (file.endswith(".pickle")):
                 try:
                     with open(fileName, 'rb') as f:
                         docs = pickle.load(f)
                     i.create_documents(docs)
                     A_count += 1
                 except Exception as e:
-                    print("Some Exception in Abheejeet : "+str(e))
+                    print("Some Exception in Abheejeet : " + str(e))
                     if 'atomic' in str(e):
                         print(" problem file : " + fileName)
                         continue
 
-            if(file.endswith(".pkl")):
+            if (file.endswith(".pkl")):
                 print(fileName)
                 df = pd.read_pickle(fileName)
                 i.create_documents(df.to_dict('records'))
-                Ad_count+= 1
+                Ad_count += 1
 
-    print("Total Abheejeet Read Files: "+ str(A_count))
+    print("Total Abheejeet Read Files: " + str(A_count))
     print("Total Aditya Read Files: " + str(Ad_count))
 
